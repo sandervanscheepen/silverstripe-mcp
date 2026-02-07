@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+php/vendor/
+
+# Build output
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/php/.phpunit.cache/test-results
+/.claude/settings.local.json
+/.claude/

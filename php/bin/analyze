@@ -1,0 +1,140 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Silverstripe MCP Analyzer CLI
+ *
+ * Analyzes PHP code for Silverstripe 6 compatibility issues.
+ *
+ * Usage:
+ *   php bin/analyze '{"code": "<?php ...", "targetVersion": "6.0"}'
+ *   echo '{"code": "..."}' | php bin/analyze
+ */
+
+// Find autoloader
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloaded = false;
+foreach ($autoloadPaths as $autoloadPath) {
+    if (file_exists($autoloadPath)) {
+        require $autoloadPath;
+        $autoloaded = true;
+        break;
+    }
+}
+
+if (!$autoloaded) {
+    fwrite(STDERR, "Error: Could not find autoloader. Run 'composer install' first.\n");
+    exit(1);
+}
+
+use SilverstripeMCP\AnalyzerRunner;
+use SilverstripeMCP\AnalysisResult;
+
+/**
+ * Read input JSON from command line argument or stdin.
+ */
+function readInput(): ?array
+{
+    global $argv;
+
+    $json = null;
+
+    // Check for command line argument
+    if (isset($argv[1]) && $argv[1] !== '-') {
+        $json = $argv[1];
+    } else {
+        // Read from stdin
+        $stdin = '';
+        stream_set_blocking(STDIN, false);
+        while ($line = fgets(STDIN)) {
+            $stdin .= $line;
+        }
+        if (!empty($stdin)) {
+            $json = $stdin;
+        }
+    }
+
+    if ($json === null) {
+        return null;
+    }
+
+    $data = json_decode($json, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return null;
+    }
+
+    return $data;
+}
+
+/**
+ * Output result as JSON.
+ */
+function outputResult(AnalysisResult $result): void
+{
+    echo json_encode($result->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+}
+
+/**
+ * Output error as JSON.
+ */
+function outputError(string $message): void
+{
+    $result = AnalysisResult::parseError($message);
+    echo json_encode($result->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    exit(1);
+}
+
+// Main execution
+$input = readInput();
+
+if ($input === null) {
+    outputError('Invalid input: expected JSON with "code" field');
+}
+
+if (!isset($input['code'])) {
+    outputError('Missing required field: "code"');
+}
+
+$code = $input['code'];
+$filename = $input['filename'] ?? '';
+$targetVersion = $input['targetVersion'] ?? '6.0';
+$enableAllPlugins = $input['enableAllPlugins'] ?? false;
+$config = $input['config'] ?? [];
+$configPath = $input['configPath'] ?? null;
+
+// Create analyzer and run
+$runner = new AnalyzerRunner();
+
+// Load config file if path provided or look in current directory
+if ($configPath !== null && file_exists($configPath)) {
+    $runner->loadConfigFile($configPath);
+} else {
+    // Try to find config in current directory
+    $defaultConfigPath = getcwd() . '/silverstripe-mcp.json';
+    if (file_exists($defaultConfigPath)) {
+        $runner->loadConfigFile($defaultConfigPath);
+    }
+}
+
+// Load additional inline config if provided (overrides file config)
+if (!empty($config)) {
+    $runner->loadConfig($config);
+}
+
+// Check if enableAllPlugins is set in config (input arg takes precedence)
+if (!$enableAllPlugins && $runner->isEnableAllPluginsSet()) {
+    $enableAllPlugins = true;
+}
+
+// Run analysis
+$result = $runner->analyze($code, $filename, $targetVersion, $enableAllPlugins);
+
+// Output result
+outputResult($result);

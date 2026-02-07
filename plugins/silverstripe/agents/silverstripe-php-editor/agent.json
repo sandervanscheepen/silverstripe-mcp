@@ -1,0 +1,19 @@
+{
+  "name": "silverstripe-php-editor",
+  "description": "Edits Silverstripe PHP files with automatic validation. Runs in its own context to avoid bloating the main conversation.",
+  "triggers": [
+    "edit silverstripe",
+    "fix silverstripe",
+    "create buildtask",
+    "create dataobject",
+    "create controller",
+    "create extension"
+  ],
+  "tools": [
+    "ss-validator",
+    "list-sections",
+    "get-documentation",
+    "read_file",
+    "write_file"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "silverstripe",
+  "version": "0.1.0",
+  "description": "Silverstripe CMS development tools for Claude Code",
+  "author": "Silverstripe Community",
+  "repository": "https://github.com/silverstripe/silverstripe-mcp",
+  "skills": [
+    "skills/silverstripe-dev"
+  ],
+  "agents": [
+    "agents/silverstripe-php-editor"
+  ],
+  "mcp": {
+    "command": "node",
+    "args": ["${pluginDir}/../../dist/index.js"]
+  }
+}

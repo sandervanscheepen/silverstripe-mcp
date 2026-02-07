@@ -1,0 +1,28 @@
+{
+    "targetVersion": "6.0",
+    "enableAllPlugins": false,
+    "plugins": {
+        "namespace-validator": {
+            "enabled": true,
+            "additionalMappings": {
+                "App\\Legacy\\OldClass": "App\\Modern\\NewClass"
+            }
+        },
+        "buildtask-validator": {
+            "enabled": true
+        },
+        "extension-hook-visibility": {
+            "enabled": true,
+            "additionalPrefixes": ["can", "provide"]
+        },
+        "elemental-namespace": {
+            "enabled": true,
+            "mappings": {
+                "Old\\Elemental\\Block": "DNADesign\\Elemental\\Models\\BaseElement"
+            }
+        }
+    },
+    "customPlugins": [
+        "./my-plugins/CustomValidatorPlugin.php"
+    ]
+}

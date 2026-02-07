@@ -1,0 +1,48 @@
+{
+  "name": "silverstripe-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Silverstripe 6 code validation",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "silverstripe-mcp": "dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sandervanscheepen/silverstripe-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sandervanscheepen/silverstripe-mcp/issues"
+  },
+  "homepage": "https://github.com/sandervanscheepen/silverstripe-mcp#readme",
+  "scripts": {
+    "build": "tsc && cp -r src/docs dist/",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:php": "cd php && composer test",
+    "test:all": "npm run test:php && npm run test"
+  },
+  "keywords": [
+    "mcp",
+    "silverstripe",
+    "php",
+    "code-analysis",
+    "ai"
+  ],
+  "author": "Sander van Scheepen",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
