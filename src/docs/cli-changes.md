@@ -33,7 +33,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class MyTask extends BuildTask
 {
-    protected static string $commandName = 'app:my-task';
+    protected static string $commandName = 'my-task';
     protected static string $description = 'Does something';
 
     protected function execute(InputInterface $input, PolyOutput $output): int
@@ -59,10 +59,10 @@ class MyTask extends BuildTask
 sake dev/tasks/my-task
 
 # New way
-sake app:my-task
+sake tasks:my-task
 
 # Or via HTTP
-/dev/tasks/app:my-task
+/dev/tasks/my-task
 ```
 
 ## Input Parameters

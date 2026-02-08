@@ -31,7 +31,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class MyTask extends BuildTask
 {
-    protected static string $commandName = 'app:my-task';
+    protected static string $commandName = 'my-task';
     protected static string $description = 'Task description';
 
     protected function execute(InputInterface $input, PolyOutput $output): int

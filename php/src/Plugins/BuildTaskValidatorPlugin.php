@@ -137,7 +137,7 @@ class BuildTaskValidatorPlugin implements ValidatorPluginInterface
                             type: 'missing_command_name',
                             message: "BuildTask classes require a static \$commandName property in Silverstripe 6",
                             line: $node->getLine(),
-                            suggestion: "protected static string \$commandName = 'app:my-task';",
+                            suggestion: "protected static string \$commandName = 'my-task';",
                             docsUrl: 'https://docs.silverstripe.org/en/6/developer_guides/cli/polycommand/#buildtask',
                         ));
                     }

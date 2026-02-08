@@ -32,7 +32,7 @@ use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Model\ArrayData;
 
 class MyTask extends BuildTask {
-    protected static string $commandName = 'app:my-task';
+    protected static string $commandName = 'my-task';
 
     protected function execute(InputInterface $input, PolyOutput $output): int {
         $output->writeln('Processing...');
@@ -132,7 +132,7 @@ Detects old BuildTask patterns that need migration to PolyCommand:
 | Issue | Detection | Suggestion |
 |-------|-----------|------------|
 | Deprecated method signature | `run(HTTPRequest $request)` | `execute(InputInterface $input, PolyOutput $output): int` |
-| Missing command name | No `$commandName` property | `protected static string $commandName = 'app:my-task';` |
+| Missing command name | No `$commandName` property | `protected static string $commandName = 'my-task';` |
 | Output via echo | `echo "..."` | `$output->writeln('...')` |
 | Output via print | `print "..."` | `$output->writeln('...')` |
 

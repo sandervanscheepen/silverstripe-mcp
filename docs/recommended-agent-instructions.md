@@ -55,7 +55,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class MyTask extends BuildTask
 {
-    protected static string $commandName = 'app:my-task';
+    protected static string $commandName = 'my-task';
 
     private static string $description = 'Description of what this task does';
 
