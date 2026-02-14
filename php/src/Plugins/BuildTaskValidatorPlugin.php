@@ -83,6 +83,23 @@ class BuildTaskValidatorPlugin implements ValidatorPluginInterface
                     foreach ($node->props as $prop) {
                         if ($prop->name->toString() === 'commandName') {
                             $this->hasCommandName = true;
+
+                            // Validate the value doesn't contain ':' or '/'
+                            if ($prop->default instanceof Node\Scalar\String_) {
+                                $value = $prop->default->value;
+                                if (strpos($value, ':') !== false || strpos($value, '/') !== false) {
+                                    // Strip everything before and including the last ':' or '/'
+                                    $suggested = preg_replace('#^.*[:/]#', '', $value);
+                                    $this->context->addIssue(new Issue(
+                                        type: 'invalid_command_name',
+                                        message: "BuildTask \$commandName must not contain ':' or '/' - the 'tasks:' namespace is automatically applied",
+                                        line: $node->getLine(),
+                                        code: "\$commandName = '{$value}'",
+                                        suggestion: "protected static string \$commandName = '{$suggested}';",
+                                        docsUrl: 'https://docs.silverstripe.org/en/6/developer_guides/cli/polycommand/#buildtask',
+                                    ));
+                                }
+                            }
                         }
                     }
                 }

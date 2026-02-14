@@ -204,6 +204,70 @@ PHP;
         $this->assertEquals(8, $echoIssues[0]->line);
     }
 
+    public function testDetectsInvalidCommandNameWithColon(): void
+    {
+        $code = <<<'PHP'
+<?php
+use SilverStripe\Dev\BuildTask;
+
+class MyTask extends BuildTask {
+    protected static string $commandName = 'app:my-task';
+
+    protected function execute($input, $output): int {
+        return 0;
+    }
+}
+PHP;
+        $result = $this->analyze($code);
+
+        $issues = $this->filterByType($result, 'invalid_command_name');
+        $this->assertCount(1, $issues);
+        $this->assertStringContainsString("must not contain", $issues[0]->message);
+        $this->assertStringContainsString("my-task", $issues[0]->suggestion);
+    }
+
+    public function testDetectsInvalidCommandNameWithSlash(): void
+    {
+        $code = <<<'PHP'
+<?php
+use SilverStripe\Dev\BuildTask;
+
+class MyTask extends BuildTask {
+    protected static string $commandName = 'app/my-task';
+
+    protected function execute($input, $output): int {
+        return 0;
+    }
+}
+PHP;
+        $result = $this->analyze($code);
+
+        $issues = $this->filterByType($result, 'invalid_command_name');
+        $this->assertCount(1, $issues);
+        $this->assertStringContainsString("must not contain", $issues[0]->message);
+        $this->assertStringContainsString("my-task", $issues[0]->suggestion);
+    }
+
+    public function testValidCommandNamePasses(): void
+    {
+        $code = <<<'PHP'
+<?php
+use SilverStripe\Dev\BuildTask;
+
+class MyTask extends BuildTask {
+    protected static string $commandName = 'my-task';
+
+    protected function execute($input, $output): int {
+        return 0;
+    }
+}
+PHP;
+        $result = $this->analyze($code);
+
+        $issues = $this->filterByType($result, 'invalid_command_name');
+        $this->assertCount(0, $issues);
+    }
+
     public function testIncludesDocsUrl(): void
     {
         $code = <<<'PHP'
